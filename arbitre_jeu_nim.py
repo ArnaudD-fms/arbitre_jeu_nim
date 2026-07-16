@@ -4,7 +4,7 @@ import random
 def init_game():
     while ((user_input := input("Voulez vous jouer contre un autre joueur ? (o/n) : ").strip().lower())
            not in ("oui", "o", "non", "n")):
-        print("Veuillez répondre ""o"" ou ""n"".")
+        print("Veuillez répondre \"o\" ou \"n\".")
 
     is_versus_player = user_input in ("oui", "o")
     two_player_game() if is_versus_player else ia_game()
@@ -15,13 +15,9 @@ def two_player_game():
     player_one = ask_name("Choisissez le pseudo du premier joueur : ")
     player_two = ask_name("Choisissez le pseudo du second joueur : ")
 
-    current_player = random.choice([player_one, player_two])
-    print(f"Tirage au sort du joueur qui jouera en premier...\n{current_player} commence la partie !")
+    current_player = draws_first_player(player_one, player_two)
 
-    while True:
-        if matches == 1:
-            print(f"il ne reste plus qu'une allumette à retirer...\nDésolé {current_player} vous perdez la partie !")
-            break
+    while not game_over(matches, current_player):
 
         user_input = input(f"{current_player} combien d'allumettes voulez-vous retirer ? (1 à 4) : ")
 
@@ -48,6 +44,13 @@ def two_player_game():
         print(f"Au tour de {current_player} de jouer.")
 
 
+def draws_first_player(player_one, player_two):
+    current_player = random.choice([player_one, player_two])
+    print(f"Tirage au sort du joueur qui jouera en premier...\n{current_player} commence la partie !")
+
+    return current_player
+
+
 def ask_name(prompt):
     while True:
         name = input(prompt).strip()
@@ -58,25 +61,19 @@ def ask_name(prompt):
         print("Le pseudo doit contenir 16 caractères au maximum.")
 
 
+def game_over(matches, current_player):
+    if matches == 1:
+        print(f"il ne reste plus qu'une allumette à retirer...\nDésolé {current_player} vous perdez la partie !")
+        return True
+    else:
+        return False
+
+
 def ia_game():
-    pass
+    matches = 21
+    player = ask_name("Choisissez votre pseudo : ")
+    current_player = draws_first_player(player, "ordinateur")
 
 
 if __name__ == '__main__':
-    # demande si le joueur ceux jouer contre l'ordinateur ou contre un humain
-    # récupération du pseudo du/des joueurs
-    # un joueur est désigné aléatoirement pour commencer
-
-    # PARTIE JOUEUR CONTRE JOUEUR
-    # On demande au joueur un combien d'allumette, il souhaite prendre (entre une et quatre).
-    # On indique le nombre d'allumettes restantes
-    # On continue la partie jusqu'à ce qu'il ne reste plus qu'une allumette. Le joueur dont c'est le tour
-    # perd la partie
-    # Attention à empêcher un joueur de prendre plus d'allumette que ce qu'il n'en reste.
-
-    # PARTIE CONTRE ORDI
-    # si le joueur démarre la partie alors l'ordinateur jouera systématiquement 5-n allumettes (n étant le nombre
-    # d'allumettes enlevé par le joueur au tour précedant)
-    # si le joueur commence l'ordinateur essaiera d'utiliser la même technique (ne fonctionnera pas si
-    # le joueur connaît l'astuce)
     init_game()
